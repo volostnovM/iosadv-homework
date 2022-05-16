@@ -71,7 +71,7 @@ extension LikeViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let delete = UIContextualAction(style: .destructive, title: "Удалить") {_,_,_ in
+        let delete = UIContextualAction(style: .destructive, title: "delete".localized()) {_,_,_ in
             if !self.isFiltered {
                 DataBaseService.shared.deletePost(indexPath.item)
                 self.tableView.reloadData()
@@ -97,10 +97,10 @@ extension LikeViewController: UITabBarControllerDelegate {
 
 extension LikeViewController {
     func naviConfig() {
-        let deleteButton = UIBarButtonItem(title: "Показать все", style: .plain, target: self, action: #selector(deleteAll))
+        let deleteButton = UIBarButtonItem(title: "show_all".localized(), style: .plain, target: self, action: #selector(deleteAll))
         self.navigationItem.rightBarButtonItem = deleteButton
 
-        let sortButton = UIBarButtonItem(title: "Поиск", style: .plain, target: self, action: #selector(sortTapped))
+        let sortButton = UIBarButtonItem(title: "find".localized(), style: .plain, target: self, action: #selector(sortTapped))
         self.navigationItem.leftBarButtonItem = sortButton
     }
 
@@ -110,9 +110,9 @@ extension LikeViewController {
     }
 
     @objc func sortTapped() {
-        let alert = UIAlertController(title: "Поиск по автору", message: "Введите имя автора", preferredStyle: .alert)
+        let alert = UIAlertController(title: "find_author".localized(), message: "write_nameAuthor".localized(), preferredStyle: .alert)
         alert.addTextField(configurationHandler: nil)
-        let alertOK = UIAlertAction(title: "Ок", style: .default) {_ in
+        let alertOK = UIAlertAction(title: "Ок".localized(), style: .default) {_ in
             guard let request = alert.textFields?[0].text else {return}
             self.filteredPosts = self.posts.filter { (post: PostVK) -> Bool in
                 return post.author.lowercased().contains(request.lowercased())
@@ -121,7 +121,7 @@ extension LikeViewController {
             self.tableView.reloadData()
             print(self.filteredPosts.count)
         }
-        let alertNo = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        let alertNo = UIAlertAction(title: "cancel".localized(), style: .cancel, handler: nil)
         [alertNo,alertOK].forEach(alert.addAction(_:))
         present(alert, animated: true)
     }

@@ -23,7 +23,7 @@ class MapViewController: UIViewController {
     }()
     
     let mapTypeControll: UISegmentedControl = {
-        let control = UISegmentedControl(items: ["Схема","Гибрид","Спутник"])
+        let control = UISegmentedControl(items: ["scheme".localized(),"hybrid".localized(),"satellite".localized()])
         control.translatesAutoresizingMaskIntoConstraints = false
         control.selectedSegmentIndex = 0
         control.addTarget(self, action: #selector(changeMapType), for: .valueChanged)
@@ -57,7 +57,7 @@ class MapViewController: UIViewController {
         super.viewDidLoad()
 
         view.backgroundColor = .white
-        self.title = "Карта"
+        self.title = "map".localized()
         mapView.delegate = self
         setupSubviews()
     }
@@ -88,7 +88,7 @@ class MapViewController: UIViewController {
             setupManager()
             checkUserLocation()
         } else {
-            showAlertLocation(title: "У вас выключена служба геолокации", message: "Для корректной работы приложения необходимо разрешить использовать ваше местоположение", url: URL(string: "App-Prefs:root=LOCATION_SERVICES"))
+            showAlertLocation(title: "geolocation".localized(), message: "geolocation_message".localized(), url: URL(string: "App-Prefs:root=LOCATION_SERVICES"))
         }
     }
     
@@ -96,7 +96,7 @@ class MapViewController: UIViewController {
         
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         
-        let settingAction = UIAlertAction(title: "Настройки", style: .default) { (alert) in
+        let settingAction = UIAlertAction(title: "setting".localized(), style: .default) { (alert) in
             
             DispatchQueue.main.async {
                 guard let url = URL(string: UIApplication.openSettingsURLString),
@@ -107,7 +107,7 @@ class MapViewController: UIViewController {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
         }
-        let cancelAction = UIAlertAction(title: "Отмена", style: .cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: "cancel".localized(), style: .cancel, handler: nil)
         
         alert.addAction(settingAction)
         alert.addAction(cancelAction)
@@ -130,8 +130,8 @@ extension MapViewController: CLLocationManagerDelegate {
 extension MapViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         guard let annotation = view.annotation else { return }
-        let alert = UIAlertController(title: "Построить маршрут?", message: nil, preferredStyle: .alert)
-        let alertYes = UIAlertAction(title: "Да", style: .default) { _ in
+        let alert = UIAlertController(title: "route".localized(), message: nil, preferredStyle: .alert)
+        let alertYes = UIAlertAction(title: "yes".localized(), style: .default) { _ in
             let directionRequest = MKDirections.Request()
 
             let sourcePlacemark = MKPlacemark(coordinate: self.mapView.userLocation.coordinate)
@@ -164,7 +164,7 @@ extension MapViewController: MKMapViewDelegate {
             }
         }
 
-        let alertNo = UIAlertAction(title: "Нет", style: .default)
+        let alertNo = UIAlertAction(title: "no".localized(), style: .default)
         [alertYes,alertNo].forEach(alert.addAction(_:))
         self.present(alert, animated: true)
     }

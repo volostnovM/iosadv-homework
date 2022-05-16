@@ -27,10 +27,10 @@ class AppCoordinator: CoordinatorProtocol {
     func setTabBarController() -> UITabBarController {
         let tabBarController = UITabBarController()
 
-        let firstItem = UITabBarItem(title: "Feed", image: UIImage(systemName: "house.fill"), tag: 0)
-        let secondItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person.fill"), tag: 1)
-        let thirdItem = UITabBarItem(title: "Like", image: UIImage(systemName: "heart.fill"), tag: 2)
-        let fourthItem = UITabBarItem(title: "Map", image: UIImage(systemName: "map"), tag: 3)
+        let firstItem = UITabBarItem(title: "feed".localized(), image: UIImage(systemName: "house.fill"), tag: 0)
+        let secondItem = UITabBarItem(title: "profile".localized(), image: UIImage(systemName: "person.fill"), tag: 1)
+        let thirdItem = UITabBarItem(title: "like".localized(), image: UIImage(systemName: "heart.fill"), tag: 2)
+        let fourthItem = UITabBarItem(title: "map".localized(), image: UIImage(systemName: "map"), tag: 3)
 
         let firstCoordinator = FeedCoordinator()
         firstCoordinator.parentCoordinator = self
