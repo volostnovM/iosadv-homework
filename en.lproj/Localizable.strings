@@ -1,0 +1,40 @@
+/* 
+  Localizable.strings
+  Navigation
+
+  Created by TIS Developer on 16.05.2022.
+  Copyright © 2022 Artem Novichkov. All rights reserved.
+*/
+"route" = "Build a route?";
+"yes" = "yes";
+"no" = "no";
+"geolocation" = "Your location service is turned off";
+"geolocation_message" = "For the application to work correctly, you must allow the use of your location";
+"setting" = "Setting";
+"cancel" = "Cancel";
+"scheme" = "scheme";
+"hybrid" = "hybrid";
+"satellite" = "satellite";
+"Ok" = "Ok";
+"delete" = "Delete";
+"show_all" = "Show all";
+"find" = "Find";
+"find_author" = "Search by author";
+"write_nameAuthor" = "Enter Author Name";
+"success_registration" = "You have successfully registered";
+"password_message" = "Password must be at least 6 characters";
+"write_mailAndPassword" = "Enter your email address and password";
+"error_passwordOrMail" = "Invalid email address or password";
+"logIn" = "Entrance";
+"create_account" = "Create an account";
+"create" = "Create";
+"error" = "Error";
+"likes" = "Likes: ";
+"views" = "Views: ";
+"feed" = "Anything";
+"profile" = "Profile";
+"like" = "Like";
+"map" = "Map";
+"check_word" = "Check the entered word";
+"to_Post" = "To post";
+"enter_Text" = "Please enter text";

@@ -89,17 +89,6 @@ class ProfileHederView: UITableViewHeaderFooterView {
         nil
     }
     
-
-//    @objc func pressButtonWriteStatus() {
-//        if let outputStatus = statusText {
-//            print(outputStatus)
-//            statusLabel.text = outputStatus
-//        }
-//        else {
-//            print("Ничего менять!")
-//        }
-//    }
-    
     @objc func textFieldwriteStatus() {
         statusText = statusTextField.text
         

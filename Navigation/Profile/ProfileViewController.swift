@@ -216,12 +216,6 @@ extension ProfileViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
-//        let userInfo = userService.sendUser(userName: userName)
-//
-//        header.fullNameLabel.text = userInfo?.userName
-//        header.avatarImageView.image = userInfo?.userAvatar
-//        header.statusLabel.text = userInfo?.userStatus
-        
         let tapGest = UITapGestureRecognizer(target: self, action: #selector(tap))
         header.avatarImageView.addGestureRecognizer(tapGest)
         

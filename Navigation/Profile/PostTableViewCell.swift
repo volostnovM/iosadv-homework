@@ -15,8 +15,12 @@ class PostTableViewCell: UITableViewCell {
         didSet {
             titleLabel.text = content?.author
             descriptionLabel.text = content?.description
-            likeLabel.text = "Likes: " + String(content!.likes)
-            viewsLabel.text = "Views: " + String(content!.views)
+            likeLabel.text = "likes".localized() + String(content!.likes)
+            viewsLabel.text = "views".localized() + String(content!.views)
+            
+            likeLabel.text = (content!.likes.convert()) + " " + String.localizedStringWithFormat("likes".localized(), content!.likes)
+            viewsLabel.text = (content!.views.convert()) + " " + String.localizedStringWithFormat("views".localized(), content!.views)
+            
             postImageView.image = UIImage(named: content!.image)
         }
     }

@@ -85,11 +85,11 @@ class LoginViewController: UIViewController {
                 if let email = self?.emailTextField.text, !email.isEmpty, let password = self?.passwordTextField.text, !password.isEmpty, password.count >= 6 {
                     self?.delegate?.signUp(enteredLogin: email, enteredPassword: password)
                     self?.coordinator?.navigateToNextPage()
-                    self?.showTruthAlert(message: "Вы успешно зарегистрированы")
+                    self?.showTruthAlert(message: "success_registration".localized())
                 } else if let password = self?.passwordTextField.text, password.count < 6 {
-                    self?.showErrorAlert(message: "Пароль должен быть не менее 6 символов")
+                    self?.showErrorAlert(message: "password_message".localized())
                 } else {
-                    self?.showErrorAlert(message: "Введите адрес электронной почты и пароль")
+                    self?.showErrorAlert(message: "write_mailAndPassword".localized())
                 }
             } else {
                 if let email = self?.emailTextField.text, !email.isEmpty,
@@ -97,10 +97,10 @@ class LoginViewController: UIViewController {
                     self?.delegate?.signIn(enteredLogin: email, enteredPassword: password, onSuccess: {
                         self?.coordinator?.navigateToNextPage()
                     }, onError: {
-                        self?.showErrorAlert(message: "Неверный адрес электронной почты или пароль")
+                        self?.showErrorAlert(message: "error_passwordOrMail".localized())
                     })
                 } else {
-                    self?.showErrorAlert(message: "Ввидите адрес электронной почты и пароль")
+                    self?.showErrorAlert(message: "write_mailAndPassword".localized())
                 }
             }
         })
@@ -112,7 +112,7 @@ class LoginViewController: UIViewController {
     }()
     
     private lazy var cancelButton: CustomButton = {
-        let button = CustomButton(title: "Cancel", titleColor: .systemBlue, backgroundColor: nil, backgroundImage: nil, buttonAction: { [weak self] in
+        let button = CustomButton(title: "cancel".localized(), titleColor: .systemBlue, backgroundColor: nil, backgroundImage: nil, buttonAction: { [weak self] in
             self?.mode = .logIn
             
             self?.emailTextField.text = ""
@@ -120,14 +120,8 @@ class LoginViewController: UIViewController {
             self?.labelMode.isHidden = true
             self?.labelMode.text = ""
             
-//            self?.firstNameTextField.isHidden = true
-//            self?.lastNameTextField.isHidden = true
-//            self?.confirmPasswordTextField.isHidden = true
             self?.cancelButton.isHidden = true
-            self?.logInButton.setTitle("Log in", for: .normal)
-            
-//            self?.emailTextField.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-//            self?.passwordTextField.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+            self?.logInButton.setTitle("logIn".localized(), for: .normal)
             
             self?.questionLabel.isHidden = false
             self?.signUpButton.isHidden = false
@@ -144,22 +138,10 @@ class LoginViewController: UIViewController {
             self?.passwordTextField.text = ""
             
             self?.labelMode.isHidden = false
-            self?.labelMode.text = "Create Account"
+            self?.labelMode.text = "create_account".localized()
             
-//            self?.firstNameTextField.isHidden = false
-//            self?.lastNameTextField.isHidden = false
-//            self?.confirmPasswordTextField.isHidden = false
             self?.cancelButton.isHidden = false
-            self?.logInButton.setTitle("Create", for: .normal)
-            
-//            self?.firstNameTextField.tag = 0
-//            self?.lastNameTextField.tag = 1
-//            self?.emailTextField.tag = 2
-//            self?.passwordTextField.tag = 3
-//            self?.confirmPasswordTextField.tag = 4
-            
-//            self?.emailTextField.layer.maskedCorners = []
-//            self?.passwordTextField.layer.maskedCorners = []
+            self?.logInButton.setTitle("create".localized(), for: .normal)
             
             self?.questionLabel.isHidden = true
             self?.signUpButton.isHidden = true
@@ -182,11 +164,8 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         
-//        firstNameTextField.delegate = self
-//        lastNameTextField.delegate = self
         emailTextField.delegate = self
         passwordTextField.delegate = self
-//        confirmPasswordTextField.delegate = self
         
         emailTextField.tag = 0
         passwordTextField.tag = 1
@@ -228,13 +207,13 @@ class LoginViewController: UIViewController {
 
 extension LoginViewController {
     private func showErrorAlert(message: String) {
-        let alert = UIAlertController(title: "Ошибка", message: message, preferredStyle: UIAlertController.Style.alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        let alert = UIAlertController(title: "error".localized(), message: message, preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "Ok".localized(), style: .default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
     private func showTruthAlert(message: String) {
         let alert = UIAlertController(title: nil, message: message, preferredStyle: UIAlertController.Style.alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        alert.addAction(UIAlertAction(title: "Ok".localized(), style: .default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
 }
@@ -244,7 +223,6 @@ extension LoginViewController {
             view.addSubview(scrollView)
             scrollView.addSubview(contentView)
             [logoImageView, labelMode, stackView, logInButton, cancelButton, questionLabel, signUpButton].forEach { contentView.addSubview($0)}
-//            [firstNameTextField, lastNameTextField, emailTextField, passwordTextField, confirmPasswordTextField].forEach { stackView.addArrangedSubview($0)}
             [emailTextField, passwordTextField].forEach { stackView.addArrangedSubview($0)}
         }
     }
@@ -276,15 +254,9 @@ extension LoginViewController {
             stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -baseInset),
             stackView.heightAnchor.constraint(equalTo: stackView.heightAnchor),
             
-//            firstNameTextField.heightAnchor.constraint(equalToConstant: 50),
-//
-//            lastNameTextField.heightAnchor.constraint(equalToConstant: 50),
-            
             emailTextField.heightAnchor.constraint(equalToConstant: 50),
 
             passwordTextField.heightAnchor.constraint(equalToConstant: 50),
-            
-//            confirmPasswordTextField.heightAnchor.constraint(equalToConstant: 50),
             
             logInButton.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: baseInset),
             logInButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: baseInset),

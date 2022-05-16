@@ -26,7 +26,7 @@ final class FeedViewController: UIViewController {
     }()
     
     private lazy var buttonCheck: CustomButton = {
-        let button = CustomButton(title: "Check the entered word", titleColor: .white, backgroundColor: nil, backgroundImage: UIImage(imageLiteralResourceName: "pixel"), buttonAction: { [weak self] in
+        let button = CustomButton(title: "check_word".localized(), titleColor: .white, backgroundColor: nil, backgroundImage: UIImage(imageLiteralResourceName: "pixel"), buttonAction: { [weak self] in
             self?.label.isHidden = false
             self?.checkEnteredWord?.checkWord(enteredWord: self?.textField.text, onChecked: { correct in
                 if (correct) {
@@ -44,7 +44,7 @@ final class FeedViewController: UIViewController {
     }()
     
     private lazy var buttonToPost: CustomButton = {
-        let button = CustomButton(title: "To post", titleColor: .white, backgroundColor: nil, backgroundImage: UIImage(imageLiteralResourceName: "pixel"), buttonAction: { [weak self] in
+        let button = CustomButton(title: "to_Post".localized(), titleColor: .white, backgroundColor: nil, backgroundImage: UIImage(imageLiteralResourceName: "pixel"), buttonAction: { [weak self] in
             self?.coordinator?.navigateToNextPage()
         })
         button.layer.cornerRadius = 10
@@ -53,7 +53,7 @@ final class FeedViewController: UIViewController {
     }()
     
     private lazy var textField: CustomTextField = {
-        let textField = CustomTextField(font: .systemFont(ofSize: 16), textColor: .black, backgroundColor: .systemGray6, placeholder: "Please enter text")
+        let textField = CustomTextField(font: .systemFont(ofSize: 16), textColor: .black, backgroundColor: .systemGray6, placeholder: "enter_Text".localized())
         textField.layer.cornerRadius = 10
         textField.layer.borderWidth = 0.5
         textField.layer.borderColor = UIColor.lightGray.cgColor
@@ -82,7 +82,6 @@ final class FeedViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
-        self.navigationItem.title = "Feed"
         self.textField.delegate = self
         
         setupViews()
