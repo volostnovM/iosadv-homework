@@ -1,8 +1,8 @@
 //
-//  ThirdBranch.swift
+//  MapCoordinator.swift
 //  Navigation
 //
-//  Created by TIS Developer on 07.04.2022.
+//  Created by TIS Developer on 16.05.2022.
 //  Copyright © 2022 Artem Novichkov. All rights reserved.
 //
 
@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 
-class LikeCoordinator: CoordinatorProtocol {
+class MapCoordinator: CoordinatorProtocol {
     
     weak var parentCoordinator: AppCoordinator?
     var childCoordinators = [CoordinatorProtocol]()
@@ -21,8 +21,8 @@ class LikeCoordinator: CoordinatorProtocol {
     }
     
     func openLikeViewController() {
-        let likeViewController: LikeViewController = LikeViewController()
-        self.navigationController.pushViewController(likeViewController, animated: true)
+        let mapViewController: MapViewController = MapViewController()
+        self.navigationController.pushViewController(mapViewController, animated: true)
     }
 }
 
