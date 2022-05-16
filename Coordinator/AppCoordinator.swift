@@ -30,7 +30,7 @@ class AppCoordinator: CoordinatorProtocol {
         let firstItem = UITabBarItem(title: "Feed", image: UIImage(systemName: "house.fill"), tag: 0)
         let secondItem = UITabBarItem(title: "Profile", image: UIImage(systemName: "person.fill"), tag: 1)
         let thirdItem = UITabBarItem(title: "Like", image: UIImage(systemName: "heart.fill"), tag: 2)
-
+        let fourthItem = UITabBarItem(title: "Map", image: UIImage(systemName: "map"), tag: 3)
 
         let firstCoordinator = FeedCoordinator()
         firstCoordinator.parentCoordinator = self
@@ -49,8 +49,14 @@ class AppCoordinator: CoordinatorProtocol {
         thirdCoordinator.openLikeViewController()
         let thirdViewControllerVC = thirdCoordinator.navigationController
         thirdViewControllerVC.tabBarItem = thirdItem
+        
+        let fourthCoordinator = MapCoordinator()
+        fourthCoordinator.parentCoordinator = self
+        fourthCoordinator.openLikeViewController()
+        let fourthViewControllerVC = fourthCoordinator.navigationController
+        fourthViewControllerVC.tabBarItem = fourthItem
 
-        tabBarController.viewControllers = [firstViewController,secondViewControllerVC,thirdViewControllerVC]
+        tabBarController.viewControllers = [firstViewController,secondViewControllerVC,thirdViewControllerVC,fourthViewControllerVC]
 
         return tabBarController
     }
