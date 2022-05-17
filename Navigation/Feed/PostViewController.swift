@@ -21,8 +21,7 @@ class PostViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.view.backgroundColor = .green
-        
+        self.view.backgroundColor = UIColor.createColor(lightMode: .myGreenColor, darkMode: .myOrangeColor)
         buttonInfo = UIBarButtonItem(image: UIImage.init(systemName: "info"), style: .plain, target: self, action: #selector(onInfoClick))
         self.navigationItem.rightBarButtonItem = buttonInfo
     }

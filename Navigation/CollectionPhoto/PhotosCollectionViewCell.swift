@@ -10,7 +10,7 @@ class PhotosCollectionViewCell: UICollectionViewCell {
     var deviceImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.backgroundColor = .black
+        imageView.backgroundColor = UIColor.createColor(lightMode: .myBlackColor, darkMode: .myWhiteColor)
         return imageView
     }()
     

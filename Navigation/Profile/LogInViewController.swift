@@ -39,7 +39,7 @@ class LoginViewController: UIViewController {
     private lazy var labelMode: UILabel = {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 24)
-        label.textColor = UIColor(red: 81/256, green: 129/256, blue: 184/256, alpha: 1)
+        label.textColor = UIColor.createColor(lightMode: .myGrayColor, darkMode: .myWhiteColor)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.isHidden = true
         return label
@@ -54,7 +54,7 @@ class LoginViewController: UIViewController {
     }()
     
     private lazy var emailTextField: CustomTextField = {
-        let textField = CustomTextField(font: .systemFont(ofSize: 16), textColor: .black, backgroundColor: .systemGray6, placeholder: "Email")
+        let textField = CustomTextField(font: .systemFont(ofSize: 16), textColor: UIColor.createColor(lightMode: .myBlackColor, darkMode: .myWhiteColor), backgroundColor: .systemGray6, placeholder: "Email")
         textField.layer.cornerRadius = 10
         textField.layer.borderWidth = 0.5
         textField.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
@@ -66,7 +66,7 @@ class LoginViewController: UIViewController {
     }()
     
     private lazy var passwordTextField: CustomTextField = {
-        let textField = CustomTextField(font: .systemFont(ofSize: 16), textColor: .black, backgroundColor: .systemGray6, placeholder: "Password")
+        let textField = CustomTextField(font: .systemFont(ofSize: 16), textColor: UIColor.createColor(lightMode: .myBlackColor, darkMode: .myWhiteColor), backgroundColor: .systemGray6, placeholder: "Password")
         textField.layer.cornerRadius = 10
         textField.layer.borderWidth = 0.5
         textField.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
@@ -153,7 +153,7 @@ class LoginViewController: UIViewController {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 16)
         label.text = "Not registered yet?"
-        label.textColor = .black
+        label.textColor = UIColor.createColor(lightMode: .myBlackColor, darkMode: .myWhiteColor)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -162,7 +162,7 @@ class LoginViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = UIColor.createColor(lightMode: .myWhiteColor, darkMode: .myBlackColor)
         
         emailTextField.delegate = self
         passwordTextField.delegate = self

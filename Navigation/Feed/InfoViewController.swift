@@ -14,6 +14,7 @@ class InfoViewController: UIViewController {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         label.text = "Wait for update"
+        label.textColor = UIColor.createColor(lightMode: .myBlackColor, darkMode: .myWhiteColor)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -24,7 +25,7 @@ class InfoViewController: UIViewController {
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
-        tableView.backgroundColor = .white
+        tableView.backgroundColor = UIColor.createColor(lightMode: .myWhiteColor, darkMode: .myBlackColor)
         tableView.layer.cornerRadius = 10
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
@@ -32,7 +33,7 @@ class InfoViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .systemGray
+        self.view.backgroundColor = UIColor.createColor(lightMode: .myGrayColor, darkMode: .myWhiteColor)
         
         setupConstraints()
         
@@ -41,6 +42,7 @@ class InfoViewController: UIViewController {
         
         NetworkService.getResidents(completion: { [weak self] (result: [String]) in
             self?.label.text = "Rundom name: \(result.randomElement() ?? "")"
+            self?.label.textColor = .myBlackColor
             self?.nameResidents = result
             self?.tableView.reloadData()
         })

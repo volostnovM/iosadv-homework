@@ -31,7 +31,7 @@ class ProfileViewController: UIViewController {
     var backgroundView1: UIView = {
         let backview = UIView()
         backview.translatesAutoresizingMaskIntoConstraints = false
-        backview.backgroundColor = .white
+        backview.backgroundColor = UIColor.createColor(lightMode: .myWhiteColor, darkMode: .myBlackColor)
         backview.alpha = 0
         return backview
     }()
@@ -74,7 +74,7 @@ class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = UIColor.createColor(lightMode: .myWhiteColor, darkMode: .myBlackColor)
         self.view.addSubview(tableView)
         self.view.addSubview(signOutButton)
         

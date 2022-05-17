@@ -14,7 +14,7 @@ class PhotosViewController: UIViewController, ImageLibrarySubscriber {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = UIColor.createColor(lightMode: .myWhiteColor, darkMode: .myGrayColor)
         view.addSubview(collectionView)
 
         setupView()
@@ -37,8 +37,7 @@ class PhotosViewController: UIViewController, ImageLibrarySubscriber {
         layout.scrollDirection = .vertical
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .white
-        
+        collectionView.backgroundColor = UIColor.createColor(lightMode: .myWhiteColor, darkMode: .myGrayColor)
         
         collectionView.register(PhotosCollectionViewCell.self, forCellWithReuseIdentifier: String(describing: PhotosCollectionViewCell.self))
 
