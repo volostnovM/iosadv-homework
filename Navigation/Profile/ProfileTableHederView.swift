@@ -12,14 +12,14 @@ class ProfileHederView: UITableViewHeaderFooterView {
     
     var profileHeaderView: UIView = {
         let view = UIView()
-        view.backgroundColor = .init(white: 0.95, alpha: 1.0)
+        view.backgroundColor = UIColor.createColor(lightMode: .myWhiteColor, darkMode: .myBlackColor)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
         
         var fullNameLabel: UILabel = {
             let label = UILabel()
-            label.textColor = .black
+            label.textColor = UIColor.createColor(lightMode: .myBlackColor, darkMode: .myWhiteColor)
             label.font = UIFont.systemFont(ofSize: 18, weight: .bold)
             label.text = "Hipster Cat"
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -28,7 +28,7 @@ class ProfileHederView: UITableViewHeaderFooterView {
         
         var statusLabel: UILabel = {
             let label = UILabel()
-            label.textColor = .gray
+            label.textColor = UIColor.createColor(lightMode: .myGrayColor, darkMode: .myWhiteColor)
             label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
             label.text = "Waiting for something..."
             label.translatesAutoresizingMaskIntoConstraints = false
@@ -49,7 +49,7 @@ class ProfileHederView: UITableViewHeaderFooterView {
     
     
     private lazy var setStatusButton: CustomButton = {
-        let button = CustomButton(title: "Set status", titleColor: .white, backgroundColor: nil, backgroundImage: UIImage(imageLiteralResourceName: "pixel"), buttonAction: { [weak self] in
+        let button = CustomButton(title: "Set status", titleColor: .myWhiteColor, backgroundColor: nil, backgroundImage: UIImage(imageLiteralResourceName: "pixel"), buttonAction: { [weak self] in
             if ((self?.statusText?.isEmpty) != nil) {
                 self?.statusText = "Set up status"
             }
@@ -64,8 +64,8 @@ class ProfileHederView: UITableViewHeaderFooterView {
 
         var statusTextField: UITextField = {
             let textField = UITextField()
-            textField.textColor = .black
-            textField.backgroundColor = .white
+            textField.textColor = UIColor.createColor(lightMode: .myBlackColor, darkMode: .myWhiteColor)
+            textField.backgroundColor = UIColor.createColor(lightMode: .myWhiteColor, darkMode: .myBlackColor)
             textField.font = UIFont.systemFont(ofSize: 15, weight: .regular)
             textField.placeholder = "Write status"
             textField.addTarget(self, action: #selector(textFieldwriteStatus), for: .editingChanged)

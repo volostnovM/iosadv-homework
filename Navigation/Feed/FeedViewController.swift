@@ -53,7 +53,7 @@ final class FeedViewController: UIViewController {
     }()
     
     private lazy var textField: CustomTextField = {
-        let textField = CustomTextField(font: .systemFont(ofSize: 16), textColor: .black, backgroundColor: .systemGray6, placeholder: "enter_Text".localized())
+        let textField = CustomTextField(font: .systemFont(ofSize: 16), textColor: UIColor.createColor(lightMode: .myBlackColor, darkMode: .myWhiteColor), backgroundColor: .systemGray6, placeholder: "enter_Text".localized())
         textField.layer.cornerRadius = 10
         textField.layer.borderWidth = 0.5
         textField.layer.borderColor = UIColor.lightGray.cgColor
@@ -81,7 +81,7 @@ final class FeedViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = UIColor.createColor(lightMode: .myWhiteColor, darkMode: .myBlackColor)
         self.textField.delegate = self
         
         setupViews()

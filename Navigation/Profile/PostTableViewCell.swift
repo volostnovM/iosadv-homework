@@ -29,7 +29,7 @@ class PostTableViewCell: UITableViewCell {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
-        imageView.backgroundColor = .black
+        imageView.backgroundColor = UIColor.createColor(lightMode: .myBlackColor, darkMode: .myWhiteColor)
         return imageView
     }()
     
@@ -37,7 +37,7 @@ class PostTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 20, weight: .bold)
-        label.textColor = .black
+        label.textColor = UIColor.createColor(lightMode: .myBlackColor, darkMode: .myWhiteColor)
         label.numberOfLines = 2
         return label
     }()
@@ -46,7 +46,7 @@ class PostTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 14, weight: .regular)
-        label.textColor = .systemGray
+        label.textColor = UIColor.createColor(lightMode: .myGrayColor, darkMode: .myWhiteColor)
         label.numberOfLines = 0
         return label
     }()
@@ -54,7 +54,7 @@ class PostTableViewCell: UITableViewCell {
     var likeLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .black
+        label.textColor = UIColor.createColor(lightMode: .myBlackColor, darkMode: .myWhiteColor)
         label.font = UIFont.systemFont(ofSize: 16, weight: .regular)
         label.numberOfLines = 1
         return label
@@ -63,7 +63,7 @@ class PostTableViewCell: UITableViewCell {
     var viewsLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = .black
+        label.textColor = UIColor.createColor(lightMode: .myBlackColor, darkMode: .myWhiteColor)
         label.font = UIFont.systemFont(ofSize: 16, weight: .regular)
         label.numberOfLines = 1
         return label
