@@ -21,35 +21,40 @@ struct ProfileView: View {
             
             Spacer()
             
-            VStack{
+            VStack(spacing: 0) {
                 TextField("Email or phone", text : $userName)
                     .textFieldStyle(.roundedBorder)
-                    .padding(.horizontal)
+                
+                Divider()
                 
                 SecureField("Password", text : $password)
                     .textFieldStyle(.roundedBorder)
-                    .padding(/*@START_MENU_TOKEN@*/.horizontal/*@END_MENU_TOKEN@*/)
-                
-                HStack {
-                    Button(action: {
-                        if !userName.isEmpty && !password.isEmpty {
-                            closeKeyboard()
-                        }
-                    }) {
-                        Text("Log in")
-                            .foregroundColor(.white)
-                            .bold()
-                            .frame(maxWidth: .infinity, alignment: .center)
-                    }
-                    .frame(minWidth: 0, maxWidth: .infinity)
-                    .padding(.top, 8)
-                    .padding(.bottom, 8)
-                    .background(.blue)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                }
-                .padding(.horizontal)
-
             }
+            .cornerRadius(10)
+            .overlay(RoundedRectangle(cornerRadius: 10)
+                .stroke(.gray, lineWidth: 0.5))
+            .padding(.bottom, 16)
+            .padding(.horizontal)
+            
+            HStack {
+                Button(action: {
+                    if !userName.isEmpty && !password.isEmpty {
+                        closeKeyboard()
+                    }
+                }) {
+                    Text("Log in")
+                        .foregroundColor(.white)
+                        .bold()
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
+                .frame(minWidth: 0, maxWidth: .infinity)
+                .padding(.top, 8)
+                .padding(.bottom, 8)
+                .background(.blue)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+            .padding(.horizontal)
+            
             Spacer()
         }
     }
