@@ -2,16 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Пожалуйста, разрешите использовать вашу биометрию для входа в приложение</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Для отображения вашего местоположения на карте</string>
-	<key>NSLocationUsageDescription</key>
-	<string>Для отображения вашего местоположения на карте</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Для отображения вашего местоположения на карте</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Для отображения вашего местоположения на карте</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -30,6 +20,16 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Пожалуйста, разрешите использовать вашу биометрию для входа в приложение</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Для отображения вашего местоположения на карте</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Для отображения вашего местоположения на карте</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Для отображения вашего местоположения на карте</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Для отображения вашего местоположения на карте</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -47,6 +47,10 @@
 			</array>
 		</dict>
 	</dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

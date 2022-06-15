@@ -11,6 +11,8 @@ import Firebase
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    
+    let notificationService = LocalNotificationsService()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
@@ -25,9 +27,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
         }
         
-        getRequestToServer()
+        //getRequestToServer()
         
         FirebaseApp.configure()
+        
+        notificationService.registeForLatestUpdatesIfPossible()
         
         return true
     }
