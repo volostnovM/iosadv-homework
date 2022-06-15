@@ -16,6 +16,9 @@ class LoginViewController: UIViewController {
     var mode = ModeLoginViewController.logIn
     var coordinator: LoginViewControllerCoordinatorDelegate?
     var delegate: LoginViewControllerDelegate?
+    let localAuthorizationService = LocalAuthorizationService()
+    
+    private var baseInset: CGFloat { return 16 }
     
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -158,7 +161,27 @@ class LoginViewController: UIViewController {
         return label
     }()
     
-    private var baseInset: CGFloat { return 16 }
+    
+    // кнопка FaceID
+    private var loginWithFaceIDButton: UIButton = {
+        let button = UIButton()
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = UIColor(named: "Color")
+        if button.isSelected == true {
+            button.alpha = 0.8
+        } else if button.isEnabled == false {
+            button.alpha = 0.8
+        } else if button.isHighlighted == true {
+            button.alpha = 0.8
+        }
+        button.layer.cornerRadius = 10
+        button.clipsToBounds = true
+        button.isEnabled = true
+        button.addTarget(self, action: #selector(toProfileBio), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -203,6 +226,26 @@ class LoginViewController: UIViewController {
         scrollView.contentInset.bottom = .zero
         scrollView.verticalScrollIndicatorInsets = .zero
     }
+    
+    @objc func toProfileBio() {
+        localAuthorizationService.authorizeIfPossible { result in
+            switch result {
+            case .success(true):
+                DispatchQueue.main.async {
+                    let profileVC = ProfileViewController()
+                    self.navigationController?.pushViewController(profileVC, animated: true)
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(title: "Ошибка аутентификации", message: String(describing: error.localizedDescription), preferredStyle: .alert)
+                    let alertOK = UIAlertAction(title: "OK", style: .default)
+                    alert.addAction(alertOK)
+                    self.present(alert, animated: true)
+                }
+            default: break
+            }
+        }
+    }
 }
 
 extension LoginViewController {
@@ -220,10 +263,24 @@ extension LoginViewController {
 
 extension LoginViewController {
         private func setupViews() {
+            
             view.addSubview(scrollView)
             scrollView.addSubview(contentView)
+            
+            if localAuthorizationService.canUserBio {
+                contentView.addSubview(loginWithFaceIDButton)
+            }
+            switch localAuthorizationService.context.biometryType {
+            case .faceID:
+                loginWithFaceIDButton.setBackgroundImage(UIImage(systemName: "faceid"), for: .normal)
+            case .touchID:
+                loginWithFaceIDButton.setBackgroundImage(UIImage(systemName: "touchid"), for: .normal)
+            default: break
+            }
+            
+            
             [logoImageView, labelMode, stackView, logInButton, cancelButton, questionLabel, signUpButton].forEach { contentView.addSubview($0)}
-            [emailTextField, passwordTextField].forEach { stackView.addArrangedSubview($0)}
+            [emailTextField, passwordTextField].forEach { self.stackView.addArrangedSubview($0)}
         }
     }
 
@@ -260,7 +317,6 @@ extension LoginViewController {
             
             logInButton.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: baseInset),
             logInButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: baseInset),
-            logInButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -baseInset),
             logInButton.heightAnchor.constraint(equalToConstant: 50),
             
             cancelButton.topAnchor.constraint(equalTo: logInButton.bottomAnchor),
@@ -275,9 +331,23 @@ extension LoginViewController {
             signUpButton.topAnchor.constraint(equalTo: logInButton.bottomAnchor, constant: 150),
             signUpButton.leadingAnchor.constraint(equalTo: questionLabel.trailingAnchor, constant: 10),
             signUpButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            signUpButton.heightAnchor.constraint(equalToConstant: 50)
+            signUpButton.heightAnchor.constraint(equalToConstant: 50),
         ]
         .forEach {$0.isActive = true}
+        
+        switch localAuthorizationService.canUserBio {
+        case true:
+            NSLayoutConstraint.activate([
+                logInButton.trailingAnchor.constraint(equalTo: loginWithFaceIDButton.leadingAnchor, constant: -16),
+
+                loginWithFaceIDButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 16),
+                loginWithFaceIDButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+                loginWithFaceIDButton.widthAnchor.constraint(equalToConstant: 50),
+                loginWithFaceIDButton.heightAnchor.constraint(equalToConstant: 50)
+            ])
+        case false:
+            logInButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
+        }
     }
 }
 
