@@ -1,0 +1,18 @@
+
+/* Class = "UITabBarItem"; title = "Feed"; ObjectID = "0HN-zR-0uF"; */
+"0HN-zR-0uF.title" = "Feed";
+
+/* Class = "UIButton"; normalTitle = "Show alert"; ObjectID = "7My-cB-a4g"; */
+"7My-cB-a4g.normalTitle" = "Show alert";
+
+/* Class = "UINavigationItem"; title = "Feed"; ObjectID = "CTA-33-ygc"; */
+"CTA-33-ygc.title" = "Feed";
+
+/* Class = "UINavigationItem"; title = "Post"; ObjectID = "N0m-Za-SVh"; */
+"N0m-Za-SVh.title" = "Post";
+
+/* Class = "UITabBarItem"; title = "Profile"; ObjectID = "SyK-iK-f7q"; */
+"SyK-iK-f7q.title" = "Profile";
+
+/* Class = "UINavigationItem"; title = "Profile"; ObjectID = "TPi-FS-zh0"; */
+"TPi-FS-zh0.title" = "Profile";
