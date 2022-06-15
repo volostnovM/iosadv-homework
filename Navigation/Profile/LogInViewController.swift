@@ -1,0 +1,380 @@
+import UIKit
+import SwiftUI
+
+protocol LoginViewControllerCoordinatorDelegate: AnyObject {
+    func navigateToNextPage()
+}
+
+protocol LoginViewControllerDelegate: AnyObject {
+    func signIn(enteredLogin: String, enteredPassword: String, onSuccess: @escaping () -> Void, onError: @escaping () -> Void)
+    func signUp(enteredLogin: String, enteredPassword: String)
+    func signOut()
+}
+
+class LoginViewController: UIViewController {
+    
+    var mode = ModeLoginViewController.logIn
+    var coordinator: LoginViewControllerCoordinatorDelegate?
+    var delegate: LoginViewControllerDelegate?
+    let localAuthorizationService = LocalAuthorizationService()
+    
+    private var baseInset: CGFloat { return 16 }
+    
+    private lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        return scrollView
+    }()
+    
+    private lazy var contentView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private lazy var logoImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "logo")
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
+    private lazy var labelMode: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.boldSystemFont(ofSize: 24)
+        label.textColor = UIColor.createColor(lightMode: .myGrayColor, darkMode: .myWhiteColor)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.isHidden = true
+        return label
+    }()
+    
+    private lazy var stackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.distribution = .fillProportionally
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+    
+    private lazy var emailTextField: CustomTextField = {
+        let textField = CustomTextField(font: .systemFont(ofSize: 16), textColor: UIColor.createColor(lightMode: .myBlackColor, darkMode: .myWhiteColor), backgroundColor: .systemGray6, placeholder: "Email")
+        textField.layer.cornerRadius = 10
+        textField.layer.borderWidth = 0.5
+        textField.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        textField.layer.borderColor = UIColor.lightGray.cgColor
+        textField.clearButtonMode = UITextField.ViewMode.whileEditing
+        textField.returnKeyType = UIReturnKeyType.done
+        textField.clipsToBounds = true
+        return textField
+    }()
+    
+    private lazy var passwordTextField: CustomTextField = {
+        let textField = CustomTextField(font: .systemFont(ofSize: 16), textColor: UIColor.createColor(lightMode: .myBlackColor, darkMode: .myWhiteColor), backgroundColor: .systemGray6, placeholder: "Password")
+        textField.layer.cornerRadius = 10
+        textField.layer.borderWidth = 0.5
+        textField.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        textField.layer.borderColor = UIColor.lightGray.cgColor
+        textField.clearButtonMode = UITextField.ViewMode.whileEditing
+        textField.clipsToBounds = true
+        textField.returnKeyType = UIReturnKeyType.done
+        textField.isSecureTextEntry = true
+        return textField
+    }()
+    
+    
+    private lazy var logInButton: CustomButton = {
+        let button = CustomButton(title: "Log in", titleColor: .white, backgroundColor: nil, backgroundImage: UIImage(imageLiteralResourceName: "pixel"), buttonAction: { [weak self] in
+            if self?.mode == .registration {
+                if let email = self?.emailTextField.text, !email.isEmpty, let password = self?.passwordTextField.text, !password.isEmpty, password.count >= 6 {
+                    self?.delegate?.signUp(enteredLogin: email, enteredPassword: password)
+                    self?.coordinator?.navigateToNextPage()
+                    self?.showTruthAlert(message: "success_registration".localized())
+                } else if let password = self?.passwordTextField.text, password.count < 6 {
+                    self?.showErrorAlert(message: "password_message".localized())
+                } else {
+                    self?.showErrorAlert(message: "write_mailAndPassword".localized())
+                }
+            } else {
+                if let email = self?.emailTextField.text, !email.isEmpty,
+                   let password = self?.passwordTextField.text, !password.isEmpty {
+                    self?.delegate?.signIn(enteredLogin: email, enteredPassword: password, onSuccess: {
+                        self?.coordinator?.navigateToNextPage()
+                    }, onError: {
+                        self?.showErrorAlert(message: "error_passwordOrMail".localized())
+                    })
+                } else {
+                    self?.showErrorAlert(message: "write_mailAndPassword".localized())
+                }
+            }
+        })
+        button.alpha = 1
+        if button.isSelected || !button.isEnabled || button.isHighlighted { button.alpha = 0.8 }
+        button.layer.cornerRadius = 10
+        button.clipsToBounds = true
+        return button
+    }()
+    
+    private lazy var cancelButton: CustomButton = {
+        let button = CustomButton(title: "cancel".localized(), titleColor: .systemBlue, backgroundColor: nil, backgroundImage: nil, buttonAction: { [weak self] in
+            self?.mode = .logIn
+            
+            self?.emailTextField.text = ""
+            self?.passwordTextField.text = ""
+            self?.labelMode.isHidden = true
+            self?.labelMode.text = ""
+            
+            self?.cancelButton.isHidden = true
+            self?.logInButton.setTitle("logIn".localized(), for: .normal)
+            
+            self?.questionLabel.isHidden = false
+            self?.signUpButton.isHidden = false
+        })
+        button.isHidden = true
+        return button
+    }()
+    
+    private lazy var signUpButton: CustomButton = {
+        let button = CustomButton(title: "Sign up", titleColor: .systemBlue, backgroundColor: nil, backgroundImage: nil, buttonAction: { [weak self] in
+            self?.mode = .registration
+            
+            self?.emailTextField.text = ""
+            self?.passwordTextField.text = ""
+            
+            self?.labelMode.isHidden = false
+            self?.labelMode.text = "create_account".localized()
+            
+            self?.cancelButton.isHidden = false
+            self?.logInButton.setTitle("create".localized(), for: .normal)
+            
+            self?.questionLabel.isHidden = true
+            self?.signUpButton.isHidden = true
+        })
+        return button
+    }()
+    
+    private lazy var questionLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.boldSystemFont(ofSize: 16)
+        label.text = "Not registered yet?"
+        label.textColor = UIColor.createColor(lightMode: .myBlackColor, darkMode: .myWhiteColor)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    
+    // кнопка FaceID
+    private var loginWithFaceIDButton: UIButton = {
+        let button = UIButton()
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = UIColor(named: "Color")
+        if button.isSelected == true {
+            button.alpha = 0.8
+        } else if button.isEnabled == false {
+            button.alpha = 0.8
+        } else if button.isHighlighted == true {
+            button.alpha = 0.8
+        }
+        button.layer.cornerRadius = 10
+        button.clipsToBounds = true
+        button.isEnabled = true
+        button.addTarget(self, action: #selector(toProfileBio), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = UIColor.createColor(lightMode: .myWhiteColor, darkMode: .myBlackColor)
+        
+        emailTextField.delegate = self
+        passwordTextField.delegate = self
+        
+        emailTextField.tag = 0
+        passwordTextField.tag = 1
+        
+        setupViews()
+        setupConstraints()
+        setupHideKeyboardOnTap()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+        
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        emailTextField.text = ""
+        passwordTextField.text = ""
+    }
+        
+    @objc func keyboardWillShow(notification: NSNotification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            scrollView.contentInset.bottom = keyboardSize.height
+            scrollView.verticalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyboardSize.height, right: 0)
+        }
+    }
+        
+    @objc func keyboardWillHide(notification: NSNotification) {
+        scrollView.contentInset.bottom = .zero
+        scrollView.verticalScrollIndicatorInsets = .zero
+    }
+    
+    @objc func toProfileBio() {
+        localAuthorizationService.authorizeIfPossible { result in
+            switch result {
+            case .success(true):
+                DispatchQueue.main.async {
+                    let profileVC = ProfileViewController()
+                    self.navigationController?.pushViewController(profileVC, animated: true)
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(title: "Ошибка аутентификации", message: String(describing: error.localizedDescription), preferredStyle: .alert)
+                    let alertOK = UIAlertAction(title: "OK", style: .default)
+                    alert.addAction(alertOK)
+                    self.present(alert, animated: true)
+                }
+            default: break
+            }
+        }
+    }
+}
+
+extension LoginViewController {
+    private func showErrorAlert(message: String) {
+        let alert = UIAlertController(title: "error".localized(), message: message, preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "Ok".localized(), style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+    private func showTruthAlert(message: String) {
+        let alert = UIAlertController(title: nil, message: message, preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "Ok".localized(), style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+}
+
+extension LoginViewController {
+        private func setupViews() {
+            
+            view.addSubview(scrollView)
+            scrollView.addSubview(contentView)
+            
+            if localAuthorizationService.canUserBio {
+                contentView.addSubview(loginWithFaceIDButton)
+            }
+            switch localAuthorizationService.context.biometryType {
+            case .faceID:
+                loginWithFaceIDButton.setBackgroundImage(UIImage(systemName: "faceid"), for: .normal)
+            case .touchID:
+                loginWithFaceIDButton.setBackgroundImage(UIImage(systemName: "touchid"), for: .normal)
+            default: break
+            }
+            
+            
+            [logoImageView, labelMode, stackView, logInButton, cancelButton, questionLabel, signUpButton].forEach { contentView.addSubview($0)}
+            [emailTextField, passwordTextField].forEach { self.stackView.addArrangedSubview($0)}
+        }
+    }
+
+extension LoginViewController {
+    private func setupConstraints() {
+        [
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            
+            logoImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 120),
+            logoImageView.heightAnchor.constraint(equalToConstant: 100),
+            logoImageView.widthAnchor.constraint(equalToConstant: 100),
+            logoImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            
+            labelMode.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 50),
+            labelMode.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            
+            stackView.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 120),
+            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: baseInset),
+            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -baseInset),
+            stackView.heightAnchor.constraint(equalTo: stackView.heightAnchor),
+            
+            emailTextField.heightAnchor.constraint(equalToConstant: 50),
+
+            passwordTextField.heightAnchor.constraint(equalToConstant: 50),
+            
+            logInButton.topAnchor.constraint(equalTo: stackView.bottomAnchor, constant: baseInset),
+            logInButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: baseInset),
+            logInButton.heightAnchor.constraint(equalToConstant: 50),
+            
+            cancelButton.topAnchor.constraint(equalTo: logInButton.bottomAnchor),
+            cancelButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            cancelButton.heightAnchor.constraint(equalToConstant: 50),
+            
+            questionLabel.topAnchor.constraint(equalTo: logInButton.bottomAnchor, constant: 150),
+            questionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 110),
+            questionLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            questionLabel.heightAnchor.constraint(equalToConstant: 50),
+            
+            signUpButton.topAnchor.constraint(equalTo: logInButton.bottomAnchor, constant: 150),
+            signUpButton.leadingAnchor.constraint(equalTo: questionLabel.trailingAnchor, constant: 10),
+            signUpButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            signUpButton.heightAnchor.constraint(equalToConstant: 50),
+        ]
+        .forEach {$0.isActive = true}
+        
+        switch localAuthorizationService.canUserBio {
+        case true:
+            NSLayoutConstraint.activate([
+                logInButton.trailingAnchor.constraint(equalTo: loginWithFaceIDButton.leadingAnchor, constant: -16),
+
+                loginWithFaceIDButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 16),
+                loginWithFaceIDButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+                loginWithFaceIDButton.widthAnchor.constraint(equalToConstant: 50),
+                loginWithFaceIDButton.heightAnchor.constraint(equalToConstant: 50)
+            ])
+        case false:
+            logInButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16).isActive = true
+        }
+    }
+}
+
+extension LoginViewController: UITextFieldDelegate {
+    //Переключение между TextField при нажатии клавиши Done в режимах logIn и registration
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        let nextTag = textField.tag + 1
+        
+        if let nextResponder = textField.superview?.viewWithTag(nextTag) {
+            nextResponder.becomeFirstResponder()
+        } else {
+            textField.resignFirstResponder()
+        }
+        return true
+    }
+}
+
+extension LoginViewController {
+    //Скрытие keyboard при нажатии за пределами TextField
+    func setupHideKeyboardOnTap() {
+        self.view.addGestureRecognizer(self.endEditingRecognizer())
+        self.navigationController?.navigationBar.addGestureRecognizer(self.endEditingRecognizer())
+    }
+    
+    private func endEditingRecognizer() -> UIGestureRecognizer {
+        let tap = UITapGestureRecognizer(target: self.view, action: #selector(self.view.endEditing(_:)))
+        tap.cancelsTouchesInView = false
+        return tap
+    }
+}
