@@ -21,7 +21,7 @@ class PostTableViewCell: UITableViewCell {
             likeLabel.text = (content!.likes.convert()) + " " + String.localizedStringWithFormat("likes".localized(), content!.likes)
             viewsLabel.text = (content!.views.convert()) + " " + String.localizedStringWithFormat("views".localized(), content!.views)
             
-            postImageView.image = UIImage(named: content!.image)
+            postImageView.image = content!.image
         }
     }
     
@@ -70,7 +70,7 @@ class PostTableViewCell: UITableViewCell {
     }()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        self.content = PostVK(author: "", description: "", image: "", likes: 0, views: 0)
+        self.content = PostVK(author: "", description: "", image: UIImage(), likes: 0, views: 0)
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         setupViews()
@@ -78,7 +78,7 @@ class PostTableViewCell: UITableViewCell {
     }
     
     required init?(coder: NSCoder) {
-        self.content = PostVK(author: "", description: "", image: "", likes: 0, views: 0)
+        self.content = PostVK(author: "", description: "", image: UIImage(), likes: 0, views: 0)
         super.init(coder: coder)
         setupViews()
     }
@@ -135,6 +135,8 @@ extension PostTableViewCell {
         self.contentView.addGestureRecognizer(recognize)
     }
     @objc func tap() {
-        DataBaseService.shared.savePost(autor: self.content?.author, discription: self.content?.description, image: self.content?.image, likes: self.content?.likes, views: self.content?.views)
+        //let nameImage = self.content?.image
+        
+        DataBaseService.shared.savePost(autor: self.content?.author, discription: self.content?.description, image: "", likes: self.content?.likes, views: self.content?.views)
     }
 }
