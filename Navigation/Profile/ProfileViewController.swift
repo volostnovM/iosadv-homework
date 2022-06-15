@@ -6,6 +6,7 @@
 import UIKit
 import iOSIntPackage
 import FirebaseAuth
+import UniformTypeIdentifiers
 
 protocol ProfileViewControllerCoordinatorDelegate: AnyObject {
     func navigateToNextPage()
@@ -104,6 +105,9 @@ class ProfileViewController: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(PostTableViewCell.self, forCellReuseIdentifier: cellID)
         tableView.register(PhotosTableViewCell.self, forCellReuseIdentifier: cellPhoto)
+        tableView.dragInteractionEnabled = true
+        tableView.dropDelegate = self
+        tableView.dragDelegate = self
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -241,28 +245,89 @@ extension ProfileViewController: UITableViewDelegate {
 extension ProfileViewController: UITableViewDataSource {
    
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 1
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        guard section == 1 else { return 1 }
         return tempStorage.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == 0 {
-            
-            let cell = tableView.dequeueReusableCell(withIdentifier: cellPhoto, for: indexPath) as! PhotosTableViewCell
-            
-            return cell
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! PostTableViewCell
+        
+        cell.content = tempStorage[indexPath.row]
+        return cell
+    }
+}
+
+@available(iOS 14.0, *)
+extension ProfileViewController: UITableViewDragDelegate, UITableViewDropDelegate {
+
+
+    func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
+        let description = self.tempStorage[indexPath.item].description ?? ""
+        let descriptionData = description.data(using: .utf8)
+
+        let image = self.tempStorage[indexPath.item].image
+        let imageData = image?.jpegData(compressionQuality: 1)
+
+        let descriptionItemProvider = NSItemProvider(object: description as NSItemProviderWriting)
+        let descriptionDragItem = UIDragItem(itemProvider: descriptionItemProvider)
+        descriptionDragItem.localObject = descriptionData
+
+        let imageItemProvider = NSItemProvider(object: image!)
+        let imageDragItem = UIDragItem(itemProvider: imageItemProvider)
+        imageDragItem.localObject = imageData
+
+        return [imageDragItem, descriptionDragItem]
+    }
+
+    func tableView(_ tableView: UITableView, canHandle session: UIDropSession) -> Bool {
+        return session.hasItemsConforming(toTypeIdentifiers: [UTType.text.identifier, UTType.image.identifier])
+    }
+
+    func tableView(_ tableView: UITableView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UITableViewDropProposal {
+        var dropProposal = UITableViewDropProposal(operation: .cancel)
+
+        guard session.items.count == 2 else { return dropProposal }
+
+        if tableView.hasActiveDrag {
+            dropProposal = UITableViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
+        } else {
+            dropProposal = UITableViewDropProposal(operation: .copy, intent: .insertAtDestinationIndexPath)
         }
-        else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! PostTableViewCell
-            
-            cell.content = Storage.arrayPost[indexPath.row]
-            
-            return cell
+
+        return dropProposal
+    }
+
+    func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
+        let destinationIndexPath: IndexPath
+
+        if let indexPath = coordinator.destinationIndexPath {
+            destinationIndexPath = indexPath
+        } else {
+            let section = tableView.numberOfSections - 1
+            let row = tableView.numberOfRows(inSection: section)
+            destinationIndexPath = IndexPath(row: row, section: section)
+        }
+
+        var post = PostVK(author: "Drag&Drop", description: nil, image: nil, likes: 0, views: 0)
+        coordinator.session.loadObjects(ofClass: NSString.self) { strings in
+            let ustrings = strings as! [String]
+            for ustring in ustrings {
+                if !ustring.isContiguousUTF8 {
+                post.description = ustring
+                }
+            }
+
+        }
+        coordinator.session.loadObjects(ofClass: UIImage.self) { images in
+            let uImages = images as! [UIImage]
+            for uImage in uImages {
+                post.image = uImage
+            }
+            self.tempStorage.insert(post, at: destinationIndexPath.item)
+            tableView.reloadData()
         }
     }
 }

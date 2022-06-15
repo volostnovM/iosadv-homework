@@ -7,6 +7,7 @@
 //
 
 import CoreData
+import UIKit
 
 class DataBaseService {
 
@@ -53,7 +54,7 @@ class DataBaseService {
             for post in posts {
                 guard let autor = post.autor,
                       let image = post.image else {return []}
-                let uPost = PostVK(author: autor, description: post.discription ?? "", image: image, likes: Int(post.likes), views: Int(post.views))
+                let uPost = PostVK(author: autor, description: post.discription ?? "", image: UIImage(named: image) ?? UIImage(), likes: Int(post.likes), views: Int(post.views))
                 uPosts.append(uPost)
             }
         } catch let error {
